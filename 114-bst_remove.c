@@ -16,6 +16,40 @@ bst_t *bst_min(bst_t *tree)
 }
 
 /**
+ * remove_node - Removes the current node
+ * @root: Pointer to the node to remove
+ *
+ * Return: Pointer to the new subtree root
+ */
+bst_t *remove_node(bst_t *root)
+{
+	bst_t *tmp;
+
+	if (root->left == NULL)
+	{
+		tmp = root->right;
+		if (tmp)
+			tmp->parent = root->parent;
+		free(root);
+		return (tmp);
+	}
+	if (root->right == NULL)
+	{
+		tmp = root->left;
+		if (tmp)
+			tmp->parent = root->parent;
+		free(root);
+		return (tmp);
+	}
+	tmp = bst_min(root->right);
+	root->n = tmp->n;
+	root->right = bst_remove(root->right, tmp->n);
+	if (root->right)
+		root->right->parent = root;
+	return (root);
+}
+
+/**
  * bst_remove - Removes a node from a BST
  * @root: Pointer to the root node
  * @value: Value to remove
@@ -24,8 +58,6 @@ bst_t *bst_min(bst_t *tree)
  */
 bst_t *bst_remove(bst_t *root, int value)
 {
-	bst_t *tmp;
-
 	if (root == NULL)
 		return (NULL);
 
@@ -42,30 +74,7 @@ bst_t *bst_remove(bst_t *root, int value)
 			root->right->parent = root;
 	}
 	else
-	{
-		if (root->left == NULL)
-		{
-			tmp = root->right;
-			if (tmp)
-				tmp->parent = root->parent;
-			free(root);
-			return (tmp);
-		}
-		if (root->right == NULL)
-		{
-			tmp = root->left;
-			if (tmp)
-				tmp->parent = root->parent;
-			free(root);
-			return (tmp);
-		}
-
-		tmp = bst_min(root->right);
-		root->n = tmp->n;
-		root->right = bst_remove(root->right, tmp->n);
-		if (root->right)
-			root->right->parent = root;
-	}
+		return (remove_node(root));
 
 	return (root);
 }
