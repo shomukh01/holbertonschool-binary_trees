@@ -18,32 +18,33 @@ avl_t *r_insert_node(avl_t **tree, avl_t *parent,
 		return (*new_node = binary_tree_node(parent, value));
 
 	if (value < (*tree)->n)
-		(*tree)->left = r_insert_node(&((*tree)->left), *tree, new_node, value);
+	{
+		(*tree)->left = r_insert_node(&((*tree)->left), *tree,
+					      new_node, value);
+	}
 	else if (value > (*tree)->n)
-		(*tree)->right = r_insert_node(&((*tree)->right), *tree, new_node, value);
+	{
+		(*tree)->right = r_insert_node(&((*tree)->right), *tree,
+					       new_node, value);
+	}
 	else
 		return (*tree);
 
 	b_factor = binary_tree_balance(*tree);
-
-	if (b_factor > 1 && value < (*tree)->left->n) /* LL Case */
+	if (b_factor > 1 && value < (*tree)->left->n)
 		return (binary_tree_rotate_right(*tree));
-
-	if (b_factor < -1 && value > (*tree)->right->n) /* RR Case */
+	if (b_factor < -1 && value > (*tree)->right->n)
 		return (binary_tree_rotate_left(*tree));
-
-	if (b_factor > 1 && value > (*tree)->left->n) /* LR Case */
+	if (b_factor > 1 && value > (*tree)->left->n)
 	{
 		(*tree)->left = binary_tree_rotate_left((*tree)->left);
 		return (binary_tree_rotate_right(*tree));
 	}
-
-	if (b_factor < -1 && value < (*tree)->right->n) /* RL Case */
+	if (b_factor < -1 && value < (*tree)->right->n)
 	{
 		(*tree)->right = binary_tree_rotate_right((*tree)->right);
 		return (binary_tree_rotate_left(*tree));
 	}
-
 	return (*tree);
 }
 
@@ -67,7 +68,6 @@ avl_t *avl_insert(avl_t **tree, int value)
 		return (*tree);
 	}
 
-	/* التعديل الجوهري: لازم نساوي الجذر بنتيجة الدالة */
 	*tree = r_insert_node(tree, NULL, &new_node, value);
 
 	return (new_node);
